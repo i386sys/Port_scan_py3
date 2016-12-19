@@ -24,6 +24,7 @@ for p in range(65535):
 
 open_port = []
 
+# sock.settimeout(0.05) may be more or less
 for port in ports:
 	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	sock.settimeout(0.05)
