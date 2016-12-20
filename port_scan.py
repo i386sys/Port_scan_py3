@@ -15,14 +15,14 @@ from datetime import datetime
 from pymongo import MongoClient
 
 #Create data base
-conn = pymongo.MongoClient
+conn = pymongo.MongoClient('mongodb://localhost:27017/')
 db = conn.port_scan
 
 # Comment out for a fixed (non-managed) scan a specific host. Example:
-#  host = ("192.168.100.254")
-#  hostName = ("example_PC")
-host = input('Enter host IP: ')
-hostName = input('Enter host name: ')
+host = ("10.5.2.11")
+hostName = ("it-4")
+# host = input('Enter host IP: ')
+# hostName = input('Enter host name: ')
 
 ports = []
 
@@ -47,10 +47,30 @@ for port in ports:
 
 print('Open ports: ')
 print (open_port)
-
+"""
 r = open ('example.txt', 'a')
 r.write('### The device ' + (str(host) )+ ' with the name ' + (str(hostName)) + '\n')
 r.write((datetime.today().strftime('%Y.%m.%d %H:%M')) + 
         '  The following open ports are found:  ' + (str(open_port)) + '\n')
 r.write('__________________________________' + '\n')
 r.close()
+
+
+def full_scan(scan_ports):
+	for port in ports:
+		sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		sock.settimeout(0.05)
+
+		try:
+			sock.connect((host, port))
+		except:
+			return('Port %s close' % port)
+		else:
+			open_port.append(port)
+			return('Port %s open' % port)
+			sock.close()
+        
+	return (open_port)
+"""
+db.open_port.save ({'Host':(str(host)), 'Name':(str(hostName)), 'Ports':(str(open_port)), 'Date':(datetime.today().strftime('%Y.%m.%d %H:%M'))})
+
