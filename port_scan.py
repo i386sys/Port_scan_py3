@@ -14,8 +14,8 @@ from datetime import datetime
 from pymongo import MongoClient
 
 #Создаем базу данных
-conn = pymongo.MongoClient()
-db = conn.port_scan
+connection = pymongo.MongoClient()
+db = connection.port_scan
 
 # Определяем устройство для сканирования
 # Для динамического ввода используйте
@@ -43,16 +43,15 @@ for port in ports:
 	try:
 		sock.connect((host, port))
 	except:
-		print('Port %s close' % port)
+		print('Порт %s закрыт' % port)
 	else:
 		open_port.append(port)
-		print('Port %s open' % port)
+		print('Порт %s открыт' % port)
 		sock.close()
 
 # Вывод открытых портов в консоль
-print('Open ports: ')
+print('Открытые порты ' + hostName + ': ')
 print (open_port)
 
 # Запись в базу данных IP адреса, имени устройства, открытых портов и даты сканирования
 db.open_port.save ({'Host':(str(host)), 'Name':(str(hostName)), 'Ports':(str(open_port)), 'Date':(datetime.today().strftime('%Y.%m.%d %H:%M'))})
-
