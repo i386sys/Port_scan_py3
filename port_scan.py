@@ -13,7 +13,8 @@ import socket
 from datetime import datetime
 from pymongo import MongoClient
 
-#Создаем базу данных
+# Создаем базу данных
+# Адрес по умолчанию localhost:27017
 connection = pymongo.MongoClient()
 db = connection.port_scan
 
@@ -21,8 +22,10 @@ db = connection.port_scan
 # Для динамического ввода используйте
 # host = input('IP устройства: ')
 # hostName = input('Имя устройства: ')
+# city = input('Город: ')
 host = ("10.5.2.11")
 hostName = ("it-4")
+city = ("Город_н")
 
 # Определяем список всех портов
 ports = []
@@ -54,4 +57,5 @@ print('Открытые порты ' + hostName + ': ')
 print (open_port)
 
 # Запись в базу данных IP адреса, имени устройства, открытых портов и даты сканирования
-db.open_port.save ({'Host':(str(host)), 'Name':(str(hostName)), 'Ports':(str(open_port)), 'Date':(datetime.today().strftime('%Y.%m.%d %H:%M'))})
+db.open_port.save ({'Host':(str(host)), 'Name':(str(hostName)), 'Ports':(str(open_port)), 
+	'Date':(datetime.today().strftime('%Y.%m.%d %H:%M')), 'City':(str(city))})
