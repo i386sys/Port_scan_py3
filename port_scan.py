@@ -3,13 +3,20 @@
 
 #  Auxiliary script to scan the device on the network
 # over a range of 16-bit addressing ports (2 ^ 16 = 65536, beginning - '0'),
-# with the result recorded in the text file
+# with the result recorded in the mongodb
 #  
 # by Islamov Danil.
 #
 
-from datetime import datetime
+#import pymongo
+import pymongo
 import socket
+from datetime import datetime
+from pymongo import MongoClient
+
+#Create data base
+conn = pymongo.MongoClient
+db = conn.port_scan
 
 # Comment out for a fixed (non-managed) scan a specific host. Example:
 #  host = ("192.168.100.254")
