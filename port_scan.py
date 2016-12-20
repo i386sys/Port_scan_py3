@@ -1,37 +1,41 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-#  Auxiliary script to scan the device on the network
-# over a range of 16-bit addressing ports (2 ^ 16 = 65536, beginning - '0'),
-# with the result recorded in the mongodb
-#  
-# by Islamov Danil.
+# Простой скрипт для сканирования устройств в сети 
+# с учетом 16 битной адресации (2^16 = 65536, начало 0)
+# с зхаписью результата в базу данных MongoDB
 #
+# Исламов Данил
 
-#import pymongo
+# Импортируем необходимые модули
 import pymongo
 import socket
 from datetime import datetime
 from pymongo import MongoClient
 
-#Create data base
-conn = pymongo.MongoClient('mongodb://localhost:27017/')
+#Создаем базу данных
+conn = pymongo.MongoClient()
 db = conn.port_scan
 
-# Comment out for a fixed (non-managed) scan a specific host. Example:
+# Определяем устройство для сканирования
+# Для динамического ввода используйте
+# host = input('IP устройства: ')
+# hostName = input('Имя устройства: ')
 host = ("10.5.2.11")
 hostName = ("it-4")
-# host = input('Enter host IP: ')
-# hostName = input('Enter host name: ')
 
+# Определяем список всех портов
 ports = []
 
 for p in range(65535):
 	ports.append(p)
 
+# Определяем список открытых портов
 open_port = []
 
-# sock.settimeout(0.05) may be more or less
+# Сканируем все порты с задержкой 0.05 
+# можно увеличить или уменьшить при необходимости
+# Открытые порты добавляются в конец списка открытых портов
 for port in ports:
 	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	sock.settimeout(0.05)
@@ -45,32 +49,10 @@ for port in ports:
 		print('Port %s open' % port)
 		sock.close()
 
+# Вывод открытых портов в консоль
 print('Open ports: ')
 print (open_port)
-"""
-r = open ('example.txt', 'a')
-r.write('### The device ' + (str(host) )+ ' with the name ' + (str(hostName)) + '\n')
-r.write((datetime.today().strftime('%Y.%m.%d %H:%M')) + 
-        '  The following open ports are found:  ' + (str(open_port)) + '\n')
-r.write('__________________________________' + '\n')
-r.close()
 
-
-def full_scan(scan_ports):
-	for port in ports:
-		sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		sock.settimeout(0.05)
-
-		try:
-			sock.connect((host, port))
-		except:
-			return('Port %s close' % port)
-		else:
-			open_port.append(port)
-			return('Port %s open' % port)
-			sock.close()
-        
-	return (open_port)
-"""
+# Запись в базу данных IP адреса, имени устройства, открытых портов и даты сканирования
 db.open_port.save ({'Host':(str(host)), 'Name':(str(hostName)), 'Ports':(str(open_port)), 'Date':(datetime.today().strftime('%Y.%m.%d %H:%M'))})
 
