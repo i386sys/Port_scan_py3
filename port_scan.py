@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Простой скрипт для сканирования устройств в сети 
-# с учетом 16 битной адресации (2^16 = 65536, начало 0)
+# с учетом 16-битной адресации (2^16 = 65536, начало 0)
 # с записью результата в базу данных MongoDB
 
 # Импортируем необходимые модули
@@ -18,12 +18,30 @@ db = connection.port_scan
 
 # Определяем устройство для сканирования
 # Для динамического ввода используйте
-# host = input('IP устройства: ')
-# hostName = input('Имя устройства: ')
-# city = input('Город: ')
-host = ("10.5.2.11")
-hostName = ("it-4")
-city = ("Город_н")
+host = input('IP устройства: ')
+hostName = input('Имя устройства: ')
+city = input('Город: ')
+# host = ("10.5.2.11")
+# hostName = ("it-4")
+# city = ("Город_н")
+
+host.split('.')
+hostIP = host.split('.')
+try:
+	hostIP = [int(item) for item in hostIP]
+# Проверка валидности введенного IP адреса
+except:
+	print('IP адрес может содержать только цифры (0-9) и точки')
+	host = input('Введите IP адрес: ')
+	host.split('.')
+	hostIP = host.split('.')
+	hostIP = [int(item) for item in hostIP]
+
+if len(hostIP) == len([number for number in hostIP if number >= 0]):
+	print('Все верно, продолжаем')
+#	else:
+#		print('IP адрес введен не корректно')
+
 
 # Определяем список всех портов
 ports = []
@@ -44,7 +62,8 @@ for port in ports:
 	try:
 		sock.connect((host, port))
 	except:
-		print('Порт %s закрыт' % port)
+		pass
+#		print('Порт %s закрыт' % port)
 	else:
 		open_port.append(port)
 		print('Порт %s открыт' % port)
