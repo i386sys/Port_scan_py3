@@ -17,13 +17,13 @@ connection = pymongo.MongoClient()
 db = connection.port_scan
 
 # Определяем устройство для сканирования
-# Для статичного ввода используйте
-host = input('IP устройства: ')
-hostName = input('Имя устройства: ')
-city = input('Город: ')
-# host = ("192.168.1.1")
-# hostName = ("Example")
-# city = ("Example")
+# Для динамичного ввода используйте:
+# host = input('IP устройства: ')
+# hostName = input('Имя устройства: ')
+# city = input('Город: ')
+host = ("192.168.1.1")
+hostName = ("Example")
+city = ("Example")
 
 host.split('.')
 hostIP = host.split('.')
