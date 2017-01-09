@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Простой скрипт для сканирования устройств в сети 
-# с учетом 16 битной адресации (2^16 = 65536, начало 0)
+# с учетом 16-битной адресации (2^16 = 65536, начало 0)
 # с записью результата в базу данных MongoDB
 
 # Импортируем необходимые модули
@@ -17,13 +17,40 @@ connection = pymongo.MongoClient()
 db = connection.port_scan
 
 # Определяем устройство для сканирования
-# Для динамического ввода используйте
-# host = input('IP устройства: ')
-# hostName = input('Имя устройства: ')
-# city = input('Город: ')
-host = ("10.5.2.11")
-hostName = ("it-4")
-city = ("Город_н")
+# Для статичного ввода используйте:
+# host = ("192.168.1.1")
+# hostName = ("Example")
+# city = ("Example")
+
+print('Здравствуйте! Введите данные устройства,' + '\n' +
+	  'которое необходимо проверить на открытые порты.' + '\n')
+
+try:
+	host = input('IP адрес: ')
+	hostName = input('Имя: ')
+	city = input('Город: ')
+
+# Разбираем строку host для проверки
+# корректности введенного IP адреса
+	host.split('.')
+	hostIP = host.split('.')
+	hostIP = [int(item) for item in hostIP]
+
+# В случае некорректного IP, вызывается
+# исключение с приглашением ввести IP снова
+except:
+	print('IP адрес должен содержать только цифры и точки')
+	host = input('IP: ')
+	host.split('.')
+	hostIP = host.split('.')
+	hostIP = [int(item) for item in hostIP]
+
+try:
+	if len(hostIP) == len([number for number in hostIP if number >= 0]):
+		print('Идет сканирование портов...' + '\n')
+
+except ValueError:
+	print('IP введен не верно.')
 
 # Определяем список всех портов
 ports = []
@@ -44,15 +71,14 @@ for port in ports:
 	try:
 		sock.connect((host, port))
 	except:
-		print('Порт %s закрыт' % port)
+		pass
 	else:
 		open_port.append(port)
-		print('Порт %s открыт' % port)
 		sock.close()
 
 # Вывод открытых портов в консоль
 print('Открытые порты ' + hostName + ': ')
-print (open_port)
+print(open_port)
 
 # Запись в базу данных IP адреса, имени устройства, открытых портов и даты сканирования
 db.open_port.save ({'Host':(str(host)), 'Name':(str(hostName)), 'Ports':(str(open_port)), 
