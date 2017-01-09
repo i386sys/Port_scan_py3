@@ -17,13 +17,13 @@ connection = pymongo.MongoClient()
 db = connection.port_scan
 
 # Определяем устройство для сканирования
-# Для динамического ввода используйте
+# Для статичного ввода используйте
 host = input('IP устройства: ')
 hostName = input('Имя устройства: ')
 city = input('Город: ')
-# host = ("10.5.2.11")
-# hostName = ("it-4")
-# city = ("Город_н")
+# host = ("192.168.1.1")
+# hostName = ("Example")
+# city = ("Example")
 
 host.split('.')
 hostIP = host.split('.')
@@ -39,9 +39,6 @@ except:
 
 if len(hostIP) == len([number for number in hostIP if number >= 0]):
 	print('Все верно, продолжаем')
-#	else:
-#		print('IP адрес введен не корректно')
-
 
 # Определяем список всех портов
 ports = []
@@ -63,7 +60,6 @@ for port in ports:
 		sock.connect((host, port))
 	except:
 		pass
-#		print('Порт %s закрыт' % port)
 	else:
 		open_port.append(port)
 		print('Порт %s открыт' % port)
