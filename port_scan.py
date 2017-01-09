@@ -17,28 +17,40 @@ connection = pymongo.MongoClient()
 db = connection.port_scan
 
 # Определяем устройство для сканирования
-# Для динамичного ввода используйте:
-# host = input('IP устройства: ')
-# hostName = input('Имя устройства: ')
-# city = input('Город: ')
-host = ("192.168.1.1")
-hostName = ("Example")
-city = ("Example")
+# Для статичного ввода используйте:
+# host = ("192.168.1.1")
+# hostName = ("Example")
+# city = ("Example")
 
-host.split('.')
-hostIP = host.split('.')
+print('Здравствуйте! Введите данные устройства,' + '\n' +
+	  'которое необходимо проверить на открытые порты.' + '\n')
+
 try:
-	hostIP = [int(item) for item in hostIP]
-# Проверка валидности введенного IP адреса
-except:
-	print('IP адрес может содержать только цифры (0-9) и точки')
-	host = input('Введите IP адрес: ')
+	host = input('IP адрес: ')
+	hostName = input('Имя: ')
+	city = input('Город: ')
+
+# Разбираем строку host для проверки
+# корректности введенного IP адреса
 	host.split('.')
 	hostIP = host.split('.')
 	hostIP = [int(item) for item in hostIP]
 
-if len(hostIP) == len([number for number in hostIP if number >= 0]):
-	print('Все верно, продолжаем')
+# В случае некорректного IP, вызывается
+# исключение с приглашением ввести IP снова
+except:
+	print('IP адрес должен содержать только цифры и точки')
+	host = input('IP: ')
+	host.split('.')
+	hostIP = host.split('.')
+	hostIP = [int(item) for item in hostIP]
+
+try:
+	if len(hostIP) == len([number for number in hostIP if number >= 0]):
+		print('Идет сканирование портов...' + '\n')
+
+except ValueError:
+	print('IP введен не верно.')
 
 # Определяем список всех портов
 ports = []
@@ -62,12 +74,11 @@ for port in ports:
 		pass
 	else:
 		open_port.append(port)
-		print('Порт %s открыт' % port)
 		sock.close()
 
 # Вывод открытых портов в консоль
 print('Открытые порты ' + hostName + ': ')
-print (open_port)
+print(open_port)
 
 # Запись в базу данных IP адреса, имени устройства, открытых портов и даты сканирования
 db.open_port.save ({'Host':(str(host)), 'Name':(str(hostName)), 'Ports':(str(open_port)), 
