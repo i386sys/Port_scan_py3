@@ -8,6 +8,7 @@
 # Импортируем необходимые модули
 import pymongo
 import socket
+import time
 from datetime import datetime
 from pymongo import MongoClient
 
@@ -52,6 +53,9 @@ try:
 except ValueError:
 	print('IP введен не верно.')
 
+# Старт таймера
+start_t = time.time()
+
 # Определяем список всех портов
 ports = []
 
@@ -76,6 +80,10 @@ for port in ports:
 		open_port.append(port)
 		sock.close()
 
+# Остановка таймера, подсчет времени
+stop_t = time.time()
+done_time = stop_t - start_t
+
 # Вывод открытых портов в консоль
 print('Открытые порты ' + hostName + ': ')
 print(open_port)
@@ -83,3 +91,6 @@ print(open_port)
 # Запись в базу данных IP адреса, имени устройства, открытых портов и даты сканирования
 db.open_port.save ({'Host':(str(host)), 'Name':(str(hostName)), 'Ports':(str(open_port)), 
 	'Date':(datetime.today().strftime('%Y.%m.%d %H:%M')), 'City':(str(city))})
+
+print('\n' + 'Время на выполнение (сек): ')
+print(done_time)
